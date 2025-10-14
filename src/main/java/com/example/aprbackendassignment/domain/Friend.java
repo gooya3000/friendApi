@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Friends {
+public class Friend {
     @Id
     private Long id;
 }
