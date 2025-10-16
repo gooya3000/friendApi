@@ -1,8 +1,8 @@
-package com.example.aprbackendassignment.controller;
+package com.example.aprbackendassignment.controller.friend;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api-v1/friends")
-public class FriendController { }
+@RequestMapping("/api/friends")
+public class FriendsController { }
