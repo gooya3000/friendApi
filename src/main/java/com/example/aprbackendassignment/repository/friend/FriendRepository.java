@@ -6,9 +6,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+
+/**
+ * 친구 관계(Friends) 조회/저장을 담당하는 리포지토리.
+ */
 public interface FriendRepository extends JpaRepository<Friend, Long> {
 
-    /** 나를 기준으로 현재 맺어진 친구 목록을 조회(createAt 내림차순) */
+    /**
+     * 사용자 ID를 기준으로 친구 목록을 조회한다.(createAt 내림차순)
+     *
+     * @param userId 친구 목록을 조회할 사용자 ID
+     * @param pageable 페이지 번호와 크기 등의 페이징 정보
+     * @return 페이징된 친구 목록
+     */
     @Query("""
            select f from Friend f
            where f.userA = :userId or f.userB = :userId

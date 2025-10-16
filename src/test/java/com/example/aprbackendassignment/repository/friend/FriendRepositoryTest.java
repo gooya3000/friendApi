@@ -14,14 +14,18 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
+/**
+ * {@link FriendRepository} 단위 테스트.
+ * <p>친구 관계 조회, 제약 조건 위반 동작을 검증한다.</p>
+ */
 @DataJpaTest
-class FriendRepositoryTest {
+public class FriendRepositoryTest {
 
     @Autowired
     FriendRepository friendRepository;
 
     @Test
-    @DisplayName("나를 기준으로 친구 목록을 조회할 수 있다(userA:=2 or userB:=2 / 최신순)")
+    @DisplayName("사용자의 id를 기준으로 친구 목록을 페이징하여 조회할 수 있다(userA:=2 or userB:=2 / 최신순)")
     void findAllByUser() {
 
         long myId = 2;

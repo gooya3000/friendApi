@@ -14,8 +14,12 @@ import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.*;
 
+/**
+ * {@link FriendRequestRepository} 단위 테스트.
+ * <p>친구 요청 조회, 제약 조건 위반 동작을 검증한다.</p>
+ */
 @DataJpaTest
-class FriendRequestRepositoryTest {
+public class FriendRequestRepositoryTest {
 
     @Autowired
     private FriendRequestRepository friendRequestRepository;
@@ -44,7 +48,7 @@ class FriendRequestRepositoryTest {
     }
 
     @Test
-    @DisplayName("나를 기준으로 친구 신청 목록을 조회할 수 있다(window 이후, 최신순)")
+    @DisplayName("사용자의 id를 기준으로 친구 신청 목록을 페이징하여 조회할 수 있다(window 이후, 최신순)")
     void findRecentForToUser() {
 
         long myId = 1;
@@ -72,7 +76,7 @@ class FriendRequestRepositoryTest {
                 .build();
         friendRequestRepository.save(todayReq);
 
-        Page<FriendRequest> page = friendRequestRepository.findRecentForToUser(myId, window, PageRequest.of(0, 10));
+        Page<FriendRequest> page = friendRequestRepository.findRecentForToUser(myId, window, FriendRequest.Status.PENDING, PageRequest.of(0, 10));
 
         assertThat(page.getTotalElements()).isEqualTo(1);
         assertThat(page.getContent().getFirst().getToUserId()).isEqualTo(myId);
