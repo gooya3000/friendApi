@@ -8,8 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.UUID;
 
-public interface FriendRequestRepository extends JpaRepository<FriendRequest, Long> {
+public interface FriendRequestRepository extends JpaRepository<FriendRequest, UUID> {
 
     /** 동일[from, to, status] 존재 여부 조회 -> 중복 판단 */
     Optional<FriendRequest> findByFromUserIdAndToUserIdAndStatus(Long fromUserId, Long toUserId, FriendRequest.Status status);

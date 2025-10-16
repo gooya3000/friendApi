@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Table(
@@ -23,8 +24,9 @@ import java.time.Instant;
 public class FriendRequest {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(nullable = false, updatable = false, columnDefinition = "char(36)")
+    private UUID id;
 
     @Column(name = "from_user_id", nullable = false)
     private Long fromUserId;
