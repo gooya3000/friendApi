@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 
 /**
  * {@link FriendService} 단위 테스트.
- * <p>친구 목록 조회, 친구 요청 생성, 수락/거절 처리 등 핵심 비즈니스 로직의 정상 동작과
+ * <p>친구 목록 조회, 친구 신청 생성, 수락/거절 처리 등 핵심 비즈니스 로직의 정상 동작과
  * 서비스 계층에서 명시적으로 발생시키는 예외를 검증한다.</p>
  */
 public class FriendServiceTest {
@@ -98,7 +98,7 @@ public class FriendServiceTest {
     }
 
     @Test
-    @DisplayName("사용자의 id로 친구 요청을 할 수 있고 결과로 요청 uuid 를 반환한다.")
+    @DisplayName("사용자의 id로 친구 신청을 할 수 있고 결과로 친구 신청 uuid 를 반환한다.")
     void request() {
 
         Long fromUserId = 1L;
@@ -122,7 +122,7 @@ public class FriendServiceTest {
     }
 
     @Test
-    @DisplayName("요청한 사용자의 id가 유효하지 않을 경우 예외가 발생한다")
+    @DisplayName("사용자의 id가 유효하지 않을 경우 예외가 발생한다")
     void request_invalid_user_id() {
 
         Long fromUserId = 1L;
@@ -156,7 +156,7 @@ public class FriendServiceTest {
     }
 
     @Test
-    @DisplayName("친구 신청의 id로 친구 요청을 수락할 수 있다")
+    @DisplayName("친구 신청의 id로 친구 신청을 수락할 수 있다")
     void accept() {
 
         UUID requestId = UUID.randomUUID();
@@ -192,7 +192,7 @@ public class FriendServiceTest {
     }
 
     @Test
-    @DisplayName("요청한 사용자의 id가 친구 신청을 요청받은 id가 아닌 경우 예외가 발생한다")
+    @DisplayName("요청한 사용자의 id가 친구 신청 받은 id가 아닌 경우 예외가 발생한다")
     void accept_not_allowed() {
 
         UUID requestId = UUID.randomUUID();
@@ -214,7 +214,7 @@ public class FriendServiceTest {
     }
 
     @Test
-    @DisplayName("요청 상태가 PENDING 이 아닌 경우 예외가 발생한다")
+    @DisplayName("친구 신청 상태가 PENDING 이 아닌 경우 예외가 발생한다")
     void accept_already_processed() {
 
         UUID requestId = UUID.randomUUID();
@@ -235,7 +235,7 @@ public class FriendServiceTest {
     }
 
     @Test
-    @DisplayName("친구 신청의 id로 친구 요청을 거절할 수 있다")
+    @DisplayName("친구 신청의 id로 친구 신청을 거절할 수 있다")
     void reject() {
 
         UUID requestId = UUID.randomUUID();
@@ -269,7 +269,7 @@ public class FriendServiceTest {
     }
 
     @Test
-    @DisplayName("요청한 사용자의 id가 친구 신청을 요청받은 id가 아닌 경우 예외가 발생한다")
+    @DisplayName("요청한 사용자의 id가 친구 신청 받은 id가 아닌 경우 예외가 발생한다")
     void reject_not_allowed() {
 
         UUID requestId = UUID.randomUUID();
@@ -288,7 +288,7 @@ public class FriendServiceTest {
     }
 
     @Test
-    @DisplayName("요청 상태가 PENDING 이 아닌 경우 예외가 발생한다")
+    @DisplayName("친구 신청 상태가 PENDING 이 아닌 경우 예외가 발생한다")
     void reject_already_processed() {
 
         UUID requestId = UUID.randomUUID();

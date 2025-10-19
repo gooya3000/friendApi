@@ -12,24 +12,24 @@ import java.util.UUID;
 
 
 /**
- * 친구 요청(FriendRequest) 조회/저장을 담당하는 리포지토리.
+ * 친구 신청(FriendRequest) 조회/저장을 담당하는 리포지토리.
  */
 public interface FriendRequestRepository extends JpaRepository<FriendRequest, UUID> {
 
     /**
-     * 요청한 사용자, 요청받은 사용자, 신청 상태로 친구 신청 목록을 조회한다.
+     * 친구 신청한 사용자, 신청받은 사용자, 신청 상태로 친구 신청 목록을 조회한다.
      *
-     * @param fromUserId 요청한 사용자 ID
-     * @param toUserId 요청받은 사용자 ID
+     * @param fromUserId 친구 신청한 사용자 ID
+     * @param toUserId 친구 신청 받은 사용자 ID
      * @param status 신청 상태
-     * @return Optional 로 감싼 친구 요청 목록. 없으면 Optional empty.
+     * @return Optional 로 감싼 친구 신청 목록. 없으면 Optional empty.
      */
     Optional<FriendRequest> findByFromUserIdAndToUserIdAndStatus(Long fromUserId, Long toUserId, FriendRequest.Status status);
 
     /**
-     * 요청받은 사용자를 기준으로 받은 친구 신청 목록을 조회한다.(createAt 내림차순)
+     * 친구 신청 받은 사용자를 기준으로 받은 친구 신청 목록을 조회한다.(createAt 내림차순)
      *
-     * @param toUserId 요청받은 사용자 ID
+     * @param toUserId 친구 신청 받은 사용자 ID
      * @param window 조회 시작 시간
      * @param status 신청 상태
      * @param pageable 페이지 번호와 크기 등의 페이징 정보

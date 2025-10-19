@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.*;
 
 /**
  * {@link FriendRequestRepository} 단위 테스트.
- * <p>친구 요청 조회, 제약 조건 위반 동작을 검증한다.</p>
+ * <p>친구 신청 조회, 제약 조건 위반 동작을 검증한다.</p>
  */
 @DataJpaTest
 public class FriendRequestRepositoryTest {
@@ -85,7 +85,7 @@ public class FriendRequestRepositoryTest {
     }
 
     @Test
-    @DisplayName("체크 제약: from_user_id <> to_user_id 위반 시 예외가 발생한다.(자기 자신에게 요청 금지)")
+    @DisplayName("체크 제약: from_user_id <> to_user_id 위반 시 예외가 발생한다.(자기 자신에게 신청 금지)")
     void checkConstraint_notSelf() {
 
         long myId = 1;

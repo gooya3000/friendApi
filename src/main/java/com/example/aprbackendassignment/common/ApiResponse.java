@@ -1,9 +1,12 @@
 package com.example.aprbackendassignment.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.http.HttpStatus;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
+
+    public static final ApiResponse<Void> SUCCESS = ApiResponse.ok(null);
 
     private final String code;    // "200", "400", "409" 등 문자열 코드
     private final String message; // "OK", "Bad Request" 등

@@ -20,14 +20,14 @@ import java.util.UUID;
 import static com.example.aprbackendassignment.domain.friend.FriendRequest.Status;
 
 /**
- * 친구 관계 및 친구 요청과 관련된 핵심 비즈니스 로직을 담당하는 서비스 클래스입니다.
+ * 친구 관계 및 친구 신청과 관련된 핵심 비즈니스 로직을 담당하는 서비스 클래스입니다.
  * <p>
  * 주요 기능:
  * <ul>
  *     <li>특정 사용자의 친구 목록 조회</li>
- *     <li>받은 친구 요청 목록 조회</li>
- *     <li>친구 요청 생성 및 중복 방지 처리</li>
- *     <li>친구 요청 수락/거절 처리 및 상태 전이 관리</li>
+ *     <li>받은 친구 신청 목록 조회</li>
+ *     <li>친구 신청 생성 및 중복 방지 처리</li>
+ *     <li>친구 신청 수락/거절 처리 및 상태 전이 관리</li>
  * </ul>
  *
  * <p><b>트랜잭션 처리:</b></p>
@@ -68,12 +68,12 @@ public class FriendService {
     }
 
     /**
-     * 특정 사용자가 받은 친구 요청(PENDING 상태) 목록을 시간 조건으로 필터링하여 페이징 조회합니다.
+     * 특정 사용자가 받은 친구 신청(PENDING 상태) 목록을 시간 조건으로 필터링하여 페이징 조회합니다.
      *
-     * @param userid 친구 요청을 받은 사용자 ID
-     * @param window 이 시각 이후에 생성된 요청만 조회
+     * @param userid 친구 신청을 받은 사용자 ID
+     * @param window 이 시각 이후에 생성된 신청만 조회
      * @param pageable 페이지 번호와 크기 등의 페이징 정보
-     * @return 친구 요청 목록 및 전체 개수를 포함한 응답 DTO
+     * @return 친구 신청 목록 및 전체 개수를 포함한 응답 DTO
      */
     @Transactional(readOnly = true)
     public FriendDtos.RequestsPageResponse listPendingRequests(Long userid, Instant window, Pageable pageable) {
@@ -99,11 +99,11 @@ public class FriendService {
 
 
     /**
-     * 새로운 친구 요청을 생성합니다. 이미 PENDING 상태의 동일한 요청이 존재하면 새로운 요청을 생성하지 않고 기존 요청 ID를 반환합니다.
+     * 새로운 친구 신청을 생성합니다. 이미 PENDING 상태의 동일한 신청이 존재하면 새로운 신청을 생성하지 않고 기존 신청 ID를 반환합니다.
      *
-     * @param fromUserId 친구 요청을 보내는 사용자 ID
-     * @param toUserId   친구 요청을 받는 사용자 ID
-     * @return 생성되거나 기존에 존재하는 친구 요청의 ID
+     * @param fromUserId 친구 신청을 보내는 사용자 ID
+     * @param toUserId 친구 신청을 받는 사용자 ID
+     * @return 생성되거나 기존에 존재하는 친구 신청의 ID
      * @throws IllegalArgumentException 사용자 ID가 잘못되었거나 존재하지 않는 경우
      */
     @Transactional
@@ -127,7 +127,7 @@ public class FriendService {
             );
             return saved.getId();
         } catch (DataIntegrityViolationException ex) {
-            // 경합 시 기존 요청 반환(성공처리) 또는 예외 전파(글로벌 핸들러가 409로 응답)
+            // 경합 시 기존 친구 신청 반환(성공처리) 또는 예외 전파(글로벌 핸들러가 409로 응답)
             return requestRepository.findByFromUserIdAndToUserIdAndStatus(fromUserId, toUserId, Status.PENDING)
                     .map(FriendRequest::getId)
                     .orElseThrow(() -> ex);
@@ -135,11 +135,11 @@ public class FriendService {
     }
 
     /**
-     * 친구 요청을 수락하고 친구 관계를 생성합니다.
+     * 친구 신청을 수락하고 친구 관계를 생성합니다.
      *
-     * @param requestId 수락할 친구 요청 ID
-     * @param userId 요청을 수락하는 사용자 ID
-     * @throws IllegalArgumentException 요청이 존재하지 않거나 권한이 없거나 이미 처리된 경우
+     * @param requestId 수락할 친구 신청 ID
+     * @param userId 친구 신청을 수락하는 사용자 ID
+     * @throws IllegalArgumentException 친구 신청이 존재하지 않거나 권한이 없거나 이미 처리된 경우
      */
     @Transactional
     public void accept(UUID requestId, Long userId) {
@@ -171,11 +171,11 @@ public class FriendService {
     }
 
     /**
-     * 친구 요청을 거절합니다.
+     * 친구 신청을 거절합니다.
      *
-     * @param requestId 거절할 친구 요청 ID
-     * @param userId 요청을 거절하는 사용자 ID
-     * @throws IllegalArgumentException 요청이 존재하지 않거나 권한이 없거나 이미 처리된 경우
+     * @param requestId 거절할 친구 신청 ID
+     * @param userId 친구 신청을 거절하는 사용자 ID
+     * @throws IllegalArgumentException 친구 신청이 존재하지 않거나 권한이 없거나 이미 처리된 경우
      */
     @Transactional
     public void reject(UUID requestId, Long userId) {
