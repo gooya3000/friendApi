@@ -52,7 +52,7 @@ class FriendsIntegrationTest {
     @Test
     @DisplayName("친구 신청 목록 조회 정상 처리 200 상태 받을 수 있다")
     void friends_requests_ok() throws Exception {
-        mvc.perform(get("/api/friends/request")
+        mvc.perform(get("/api/friends/requests")
                         .header("X-user-id", "1")
                         .param("page", "0")
                         .param("maxSize", "10")
@@ -141,7 +141,7 @@ class FriendsIntegrationTest {
     @Test
     @DisplayName("window 형식이 잘못되면 400 오류를 반환할 수 있다")
     void invalid_window_400() throws Exception {
-        mvc.perform(get("/api/friends/request")
+        mvc.perform(get("/api/friends/requests")
                         .header("X-user-id", "3")
                         .param("window", "3w")) // 요구 스펙: 1d/7d/30d만 허용
                 .andExpect(status().isBadRequest());

@@ -85,8 +85,8 @@ class FriendsControllerTest {
         assertThat(pageable.getPageSize()).isEqualTo(20);
         // 기본 정렬 조건 확인
         Sort sort = pageable.getSort();
-        assertThat(sort.getOrderFor("createAt")).isNotNull();
-        assertThat(Objects.requireNonNull(sort.getOrderFor("createAt")).getDirection()).isEqualTo(Sort.Direction.DESC);
+        assertThat(sort.getOrderFor("createdAt")).isNotNull();
+        assertThat(Objects.requireNonNull(sort.getOrderFor("createdAt")).getDirection()).isEqualTo(Sort.Direction.DESC);
     }
 
     @Test
@@ -113,8 +113,8 @@ class FriendsControllerTest {
         Pageable pageable = pageableCaptor.getValue();
         assertThat(pageable.getPageNumber()).isEqualTo(2);
         assertThat(pageable.getPageSize()).isEqualTo(5);
-        assertThat(pageable.getSort().getOrderFor("createAt")).isNotNull();
-        assertThat(Objects.requireNonNull(pageable.getSort().getOrderFor("createAt")).getDirection()).isEqualTo(Sort.Direction.ASC);
+        assertThat(pageable.getSort().getOrderFor("createdAt")).isNotNull();
+        assertThat(Objects.requireNonNull(pageable.getSort().getOrderFor("createdAt")).getDirection()).isEqualTo(Sort.Direction.ASC);
     }
 
     @Test
@@ -135,7 +135,7 @@ class FriendsControllerTest {
         when(friendService.listPendingRequests(eq(3L), any(Instant.class), any(Pageable.class)))
                 .thenReturn(pageResponse);
         // when
-        mvc.perform(get("/api/friends/request")
+        mvc.perform(get("/api/friends/requests")
                         .header("X-user-id", "3"))
                 // then
                 .andExpect(status().isOk())
@@ -150,8 +150,8 @@ class FriendsControllerTest {
         assertThat(pageable.getPageSize()).isEqualTo(20);
         // 기본 정렬 조건 확인
         Sort sort = pageable.getSort();
-        assertThat(sort.getOrderFor("createAt")).isNotNull();
-        assertThat(Objects.requireNonNull(sort.getOrderFor("createAt")).getDirection()).isEqualTo(Sort.Direction.DESC);
+        assertThat(sort.getOrderFor("createdAt")).isNotNull();
+        assertThat(Objects.requireNonNull(sort.getOrderFor("createdAt")).getDirection()).isEqualTo(Sort.Direction.DESC);
 
     }
 
@@ -164,7 +164,7 @@ class FriendsControllerTest {
                 .thenReturn(pageResponse);
 
         // when
-        mvc.perform(get("/api/friends/request")
+        mvc.perform(get("/api/friends/requests")
                         // when
                         .header("X-user-id", "4")
                         .param("window", "7d")
@@ -186,8 +186,8 @@ class FriendsControllerTest {
         Pageable pageable = pageableCaptor.getValue();
         assertThat(pageable.getPageNumber()).isEqualTo(1);
         assertThat(pageable.getPageSize()).isEqualTo(10);
-        assertThat(pageable.getSort().getOrderFor("createAt")).isNotNull();
-        assertThat(Objects.requireNonNull(pageable.getSort().getOrderFor("createAt")).getDirection()).isEqualTo(Sort.Direction.DESC);
+        assertThat(pageable.getSort().getOrderFor("createdAt")).isNotNull();
+        assertThat(Objects.requireNonNull(pageable.getSort().getOrderFor("createdAt")).getDirection()).isEqualTo(Sort.Direction.DESC);
     }
 
     @Test
@@ -195,7 +195,7 @@ class FriendsControllerTest {
     void listRequests_missing_x_user_id_header_400() throws Exception {
         // given 서비스 스텁 필요 없음
         // when
-        mvc.perform(get("/api/friends/request"))
+        mvc.perform(get("/api/friends/requests"))
                 // then
                 .andExpect(status().isBadRequest());
     }
@@ -205,7 +205,7 @@ class FriendsControllerTest {
     void listRequests_invalid_window_400() throws Exception {
         // given 서비스 스텁 필요 없음
         // when
-        mvc.perform(get("/api/friends/request")
+        mvc.perform(get("/api/friends/requests")
                         .header("X-user-id", "1")
                         .param("window", "3w")) // d가 아님
                 // then

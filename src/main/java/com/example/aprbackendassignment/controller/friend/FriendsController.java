@@ -38,7 +38,7 @@ public class FriendsController {
     }
 
     @Operation(summary = "받은 친구 신청 조회", description = "나를 기준으로 받은 친구 신청 목록을 조회합니다.")
-    @GetMapping("/request")
+    @GetMapping("/requests")
     public ApiResponse<FriendDtos.RequestsPageResponse> getFriendRequestPage(
             @RequestHeader("X-user-id") Long userId,
             @RequestParam(defaultValue = "0") int page,
