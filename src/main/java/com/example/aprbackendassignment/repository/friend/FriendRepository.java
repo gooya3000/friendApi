@@ -22,7 +22,6 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
     @Query("""
            select f from Friend f
            where f.userA = :userId or f.userB = :userId
-           order by f.createdAt desc
            """)
     Page<Friend> findAllByUser(Long userId, Pageable pageable);
 

@@ -47,7 +47,7 @@ public class FriendsController {
             @RequestParam(defaultValue = "requestedAt,DESC") String sort
     ) {
 
-        return ApiResponse.ok(friendService.listPendingRequests(userId, WindowParser.getInstant(window, clock), PageableBuilder.build(page, maxSize, sort)));
+        return ApiResponse.ok(friendService.listPendingRequests(window, userId, WindowParser.getInstant(window, clock), PageableBuilder.build(page, maxSize, sort)));
 
     }
 

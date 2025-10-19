@@ -60,10 +60,9 @@ class FriendServiceTest {
 
         FriendDtos.FriendsPageResponse response = service.listFriends(userid, PageRequest.of(0, 10));
 
-        assertThat(response.totalElements()).isEqualTo(1);
+        assertThat(response.totalCount()).isEqualTo(1);
         assertThat(response.items()).hasSize(1);
-        assertThat(response.items().getFirst().userA()).isEqualTo(userid);
-        assertThat(response.items().getFirst().userB()).isEqualTo(2L);
+        assertThat(response.items().getFirst().userId()).isEqualTo(userid);
 
     }
 
@@ -72,9 +71,9 @@ class FriendServiceTest {
     void listPendingRequests() {
 
         Long myId = 1L;
-
+        String window = "1d";
         Instant now = Instant.now();
-        Instant window = now.minus(7, ChronoUnit.DAYS);
+        Instant instantWindow = now.minus(7, ChronoUnit.DAYS);
 
         FriendRequest friendRequest = FriendRequest.builder()
                 .id(UUID.randomUUID())
@@ -88,12 +87,11 @@ class FriendServiceTest {
                 .thenReturn(new PageImpl<>(List.of(friendRequest)));
 
         FriendDtos.RequestsPageResponse page = service.listPendingRequests(
-                myId, window, PageRequest.of(0, 10));
+                window, myId, instantWindow, PageRequest.of(0, 10));
 
-        assertThat(page.totalElements()).isEqualTo(1);
+        assertThat(page.totalCount()).isEqualTo(1);
         assertThat(page.items()).hasSize(1);
-        assertThat(page.items().getFirst().id()).isEqualTo(friendRequest.getId());
-        assertThat(page.items().getFirst().status()).isEqualTo("PENDING");
+        assertThat(page.items().getFirst().request_id()).isEqualTo(friendRequest.getId());
 
     }
 
@@ -111,6 +109,10 @@ class FriendServiceTest {
         FriendRequest friendRequest = FriendRequest.builder()
                 .id(id).fromUserId(fromUserId).toUserId(toUserId)
                 .status(FriendRequest.Status.PENDING).createdAt(Instant.now()).build();
+
+        when(requestRepository.findByFromUserIdAndToUserIdAndStatus(
+                eq(fromUserId), eq(toUserId), eq(FriendRequest.Status.PENDING))
+        ).thenReturn(java.util.Optional.empty());
 
         when(requestRepository.save(any(FriendRequest.class))).thenReturn(friendRequest);
 

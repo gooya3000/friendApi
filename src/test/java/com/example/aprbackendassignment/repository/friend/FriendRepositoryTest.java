@@ -36,6 +36,7 @@ class FriendRepositoryTest {
         friendRepository.save(Friend.builder()
                 .userA(Math.min(f1Id, myId))
                 .userB(Math.max(f1Id, myId))
+                .requestedBy(myId)
                 .createdAt(Instant.now())
                 .build());
 
@@ -43,6 +44,7 @@ class FriendRepositoryTest {
         friendRepository.save(Friend.builder()
                 .userA(Math.min(f2Id, myId))
                 .userB(Math.max(f2Id, myId))
+                .requestedBy(f2Id)
                 .createdAt(Instant.now())
                 .build());
 
@@ -102,7 +104,7 @@ class FriendRepositoryTest {
         long id1 = 1;
         long id2 = 2;
 
-        Friend first = Friend.builder().userA(id1).userB(id2).createdAt(Instant.now()).build();
+        Friend first = Friend.builder().userA(id1).userB(id2).requestedBy(id1).createdAt(Instant.now()).build();
         friendRepository.saveAndFlush(first);
 
         Friend dup = Friend.builder().userA(id1).userB(id2).createdAt(Instant.now()).build();

@@ -35,6 +35,9 @@ public class Friend {
     @Column(name = "user_b", nullable = false)
     private Long userB;
 
+    @Column(name = "requested_by", nullable = false)
+    private Long requestedBy;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     @Builder.Default
     private Instant createdAt = Instant.now();

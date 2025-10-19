@@ -40,7 +40,6 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, UU
            where fr.toUserId = :toUserId
              and fr.createdAt >= :window
              and fr.status = :status
-           order by fr.createdAt desc
            """)
     Page<FriendRequest> findRecentForToUser(Long toUserId, Instant window, FriendRequest.Status status, Pageable pageable);
 

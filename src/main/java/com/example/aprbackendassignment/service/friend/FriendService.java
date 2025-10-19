@@ -58,12 +58,12 @@ public class FriendService {
         Page<Friend> page = friendRepository.findAllByUser(userid, pageable);
 
         List<FriendDtos.FriendItem> items = page.getContent().stream()
-                .map(f -> new FriendDtos.FriendItem(f.getUserA(), f.getUserB(), f.getCreatedAt()))
+                .map(f -> new FriendDtos.FriendItem(userid, f.getRequestedBy(), f.getUserA().equals(f.getRequestedBy()) ? f.getUserB() : f.getUserA(), f.getCreatedAt()))
                 .toList();
 
         return new FriendDtos.FriendsPageResponse(
-                page.getTotalElements(),
                 page.getTotalPages(),
+                page.getTotalElements(),
                 items
         );
     }
@@ -77,23 +77,21 @@ public class FriendService {
      * @return 친구 신청 목록 및 전체 개수를 포함한 응답 DTO
      */
     @Transactional(readOnly = true)
-    public FriendDtos.RequestsPageResponse listPendingRequests(Long userid, Instant window, Pageable pageable) {
+    public FriendDtos.RequestsPageResponse listPendingRequests(String window, Long userid, Instant instantWindow, Pageable pageable) {
 
-        Page<FriendRequest> page = requestRepository.findRecentForToUser(userid, window, FriendRequest.Status.PENDING, pageable);
+        Page<FriendRequest> page = requestRepository.findRecentForToUser(userid, instantWindow, FriendRequest.Status.PENDING, pageable);
 
         List<FriendDtos.RequestItem> items = page.getContent().stream()
                 .map(r -> new FriendDtos.RequestItem(
                         r.getId(),
                         r.getFromUserId(),
-                        r.getToUserId(),
-                        r.getStatus().name(),
                         r.getCreatedAt()
                 ))
                 .toList();
 
         return new FriendDtos.RequestsPageResponse(
+                window,
                 page.getTotalElements(),
-                page.getTotalPages(),
                 items
         );
     }
@@ -128,7 +126,7 @@ public class FriendService {
         }
 
         try {
-            FriendRequest saved = requestRepository.saveAndFlush( // 멱등성을 위해 저장 시점에 바로 flush
+            FriendRequest saved = requestRepository.save(
                     FriendRequest.builder()
                             .fromUserId(fromUserId)
                             .toUserId(toUserId)
@@ -172,6 +170,7 @@ public class FriendService {
         Friend fr = Friend.builder()
                 .userA(userA)
                 .userB(userB)
+                .requestedBy(req.getFromUserId())
                 .createdAt(Instant.now())
                 .build();
         try {

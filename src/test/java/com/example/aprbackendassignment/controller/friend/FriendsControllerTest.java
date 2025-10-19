@@ -132,7 +132,7 @@ class FriendsControllerTest {
     void listRequests_ok_default() throws Exception {
         // given
         var pageResponse = Mockito.mock(FriendDtos.RequestsPageResponse.class);
-        when(friendService.listPendingRequests(eq(3L), any(Instant.class), any(Pageable.class)))
+        when(friendService.listPendingRequests(anyString(), eq(3L), any(Instant.class), any(Pageable.class)))
                 .thenReturn(pageResponse);
         // when
         mvc.perform(get("/api/friends/requests")
@@ -143,7 +143,7 @@ class FriendsControllerTest {
 
         // 서비스에 전달할 Pageable 캡처
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
-        Mockito.verify(friendService).listPendingRequests(eq(3L), any(Instant.class), pageableCaptor.capture());
+        Mockito.verify(friendService).listPendingRequests(anyString(), eq(3L), any(Instant.class), pageableCaptor.capture());
         // Pageable default value 로 잘 생성되었는지 확인
         Pageable pageable = pageableCaptor.getValue();
         assertThat(pageable.getPageNumber()).isEqualTo(0);
@@ -160,7 +160,7 @@ class FriendsControllerTest {
     void listRequests_ok_request_param() throws Exception {
         // given
         var pageResponse = Mockito.mock(FriendDtos.RequestsPageResponse.class);
-        when(friendService.listPendingRequests(eq(4L), any(Instant.class), any(Pageable.class)))
+        when(friendService.listPendingRequests(anyString(), eq(4L), any(Instant.class), any(Pageable.class)))
                 .thenReturn(pageResponse);
 
         // when
@@ -178,7 +178,7 @@ class FriendsControllerTest {
         // 서비스로 전달할 window 파싱한 Instant 와 Pageable 캡처
         ArgumentCaptor<Instant> instantCaptor = ArgumentCaptor.forClass(Instant.class);
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
-        Mockito.verify(friendService).listPendingRequests(eq(4L), instantCaptor.capture(), pageableCaptor.capture());
+        Mockito.verify(friendService).listPendingRequests(anyString(), eq(4L), instantCaptor.capture(), pageableCaptor.capture());
         // window 파라미터 파싱 확인
         Instant instant = instantCaptor.getValue();
         assertThat(instant).isEqualTo(Instant.now(clock).minus(7, ChronoUnit.DAYS));

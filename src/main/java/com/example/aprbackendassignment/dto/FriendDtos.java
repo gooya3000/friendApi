@@ -17,20 +17,21 @@ public final class FriendDtos {
     /**
      * 친구 목록 요청의 응답 아이템
      * <p>GET /api/friends</p>
-     * @param userA 친구가 맺어진 사용자 A (DB 테이블 제약에 맞춰 id 가 작은 값)
-     * @param userB 친구가 맺어진 사용자 B (DB 테이블 제약에 맞춰 id 가 큰 값)
+     * @param userId 조회하는 사용자 ID
+     * @param from_user_id 친구 신청한 사용자 ID
+     * @param to_user_id 친구 신청 받은 사용자 ID
      * @param approvedAt 승인일시
      */
-    public record FriendItem(Long userA, Long userB, Instant approvedAt) { }
+    public record FriendItem(Long userId, Long from_user_id, Long to_user_id, Instant approvedAt) { }
 
     /**
      * 친구 목록 요청의 응답
      * <p>GET /api/friends</p>
-     * @param totalElements 전체 친구 수
      * @param totalPages 전체 페이지 수
+     * @param totalCount 전체 친구 수
      * @param items 페이징 내 친구 아이템(FriendItem)
      */
-    public record FriendsPageResponse(long totalElements, int totalPages, List<FriendItem> items) { }
+    public record FriendsPageResponse(int totalPages, long totalCount, List<FriendItem> items) { }
 
     /**
      * 친구 신청의 요청 바디
@@ -40,30 +41,20 @@ public final class FriendDtos {
     public record CreateRequest(@NotNull @Min(1) Long toUserId) { }
 
     /**
-     * 친구 신청의 응답
-     * <p>POST /api/friends/request</p>
-     * @param uuid 친구 신청 ID
-     */
-    public record RequestUUID(String uuid) { }
-
-    /**
      * 친구 신청 목록 요청의 응답 아이템
      * <p>GET /api/friends/requests</p>
-     * @param id 친구 신청 ID
-     * @param fromUserId 친구 신청을 한 사용자의 ID
-     * @param toUserId 친구 신청을 받은 사용자의 ID
-     * @param status 친구 신청 상태
+     * @param request_id 친구 신청 ID
+     * @param request_user_id 친구 신청을 한 사용자의 ID
      * @param requestedAt 신청 일시
      */
-    public record RequestItem(UUID id, Long fromUserId, Long toUserId, String status, Instant requestedAt) { }
+    public record RequestItem(UUID request_id, Long request_user_id, Instant requestedAt) { }
 
     /**
      * 친구 신청 목록 요청의 응답
      * <p>GET /api/friends/requests</p>
-     * @param totalElements
-     * @param totalPages
-     * @param items
+     * @param totalCount 토탈 갯수
+     * @param items 친구 신청 내용
      */
-    public record RequestsPageResponse(long totalElements, int totalPages, List<RequestItem> items) { }
+    public record RequestsPageResponse(String window, long totalCount, List<RequestItem> items) { }
 
 }
