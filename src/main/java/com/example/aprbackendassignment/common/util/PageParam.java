@@ -2,6 +2,12 @@ package com.example.aprbackendassignment.common.util;
 
 import org.springframework.data.domain.Sort;
 
+/**
+ * 유효한 페이지 파라미터를 반환하는 유틸 클래스 입니다.
+ * @param page 조회 페이지
+ * @param size 페이지 사이즈
+ * @param sort 정렬 조건
+ */
 public record PageParam(int page, int size, Sort sort) {
 
     public static final int DEFAULT_PAGE = 0;

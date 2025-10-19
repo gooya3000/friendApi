@@ -5,6 +5,9 @@ import org.springframework.data.domain.Sort;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 'createAt,DESC' 형식으로 들어오는 문자열에 대해 키 체크 및 Sort 로 반환해주는 유틸 클래스입니다.
+ */
 public final class SortParser {
     private SortParser() {}
 

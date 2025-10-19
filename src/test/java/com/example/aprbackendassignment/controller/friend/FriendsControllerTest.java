@@ -26,6 +26,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -55,8 +56,8 @@ class FriendsControllerTest {
 
         Clock fixed = Clock.fixed(Instant.parse("2025-10-17T07:04:52.083063Z"), ZoneOffset.UTC);
 
-        Mockito.when(clock.instant()).thenReturn(fixed.instant());
-        Mockito.when(clock.getZone()).thenReturn(fixed.getZone());
+        when(clock.instant()).thenReturn(fixed.instant());
+        when(clock.getZone()).thenReturn(fixed.getZone());
 
     }
 
@@ -65,7 +66,7 @@ class FriendsControllerTest {
     void listFriends_ok_default() throws Exception {
         // given
         var pageResponse = Mockito.mock(FriendDtos.FriendsPageResponse.class);
-        Mockito.when(friendService.listFriends(eq(1L), any(Pageable.class)))
+        when(friendService.listFriends(eq(1L), any(Pageable.class)))
                 .thenReturn(pageResponse);
 
         // when
@@ -93,7 +94,7 @@ class FriendsControllerTest {
     void listFriends_ok_request_param() throws Exception {
         // given
         var pageResponse = Mockito.mock(FriendDtos.FriendsPageResponse.class);
-        Mockito.when(friendService.listFriends(eq(2L), any(Pageable.class)))
+        when(friendService.listFriends(eq(2L), any(Pageable.class)))
                 .thenReturn(pageResponse);
         // when
         mvc.perform(get("/api/friends")
@@ -131,7 +132,7 @@ class FriendsControllerTest {
     void listRequests_ok_default() throws Exception {
         // given
         var pageResponse = Mockito.mock(FriendDtos.RequestsPageResponse.class);
-        Mockito.when(friendService.listPendingRequests(eq(3L), any(Instant.class), any(Pageable.class)))
+        when(friendService.listPendingRequests(eq(3L), any(Instant.class), any(Pageable.class)))
                 .thenReturn(pageResponse);
         // when
         mvc.perform(get("/api/friends/request")
@@ -159,7 +160,7 @@ class FriendsControllerTest {
     void listRequests_ok_request_param() throws Exception {
         // given
         var pageResponse = Mockito.mock(FriendDtos.RequestsPageResponse.class);
-        Mockito.when(friendService.listPendingRequests(eq(4L), any(Instant.class), any(Pageable.class)))
+        when(friendService.listPendingRequests(eq(4L), any(Instant.class), any(Pageable.class)))
                 .thenReturn(pageResponse);
 
         // when
@@ -218,7 +219,7 @@ class FriendsControllerTest {
         FriendDtos.CreateRequest requestBody = new FriendDtos.CreateRequest(1L);
         // given
         UUID id = UUID.randomUUID();
-        Mockito.when(friendService.request(2L, 1L)).thenReturn(id);
+        when(friendService.request(2L, 1L)).thenReturn(id);
 
         // when
         mvc.perform(post("/api/friends/request")
@@ -257,6 +258,42 @@ class FriendsControllerTest {
                         .content(invalidJson))
                 // then
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("친구 신청 요청 초당 10회 초과 시 409 오류를 반환할 수 있다")
+    void createRequest_after_limit_10_per_second_409() throws Exception {
+
+        when(friendService.request(anyLong(), anyLong()))
+                .thenReturn(UUID.randomUUID());
+
+        // 10회까지 200
+        for (int i = 0; i < 10; i++) {
+            mvc.perform(post("/api/friends/request")
+                            .header("X-user-id", "1")
+                            .contentType("application/json")
+                            .content("{\"toUserId\": 2}"))
+                    .andExpect(status().isOk());
+        }
+
+        // 11번째 429
+        mvc.perform(post("/api/friends/request")
+                        .header("X-user-id", "1")
+                        .contentType("application/json")
+                        .content("{\"toUserId\": 2}"))
+                .andExpect(status().isTooManyRequests())
+                .andExpect(header().exists("Retry-After"))
+                .andExpect(header().string("X-RateLimit-Limit", "10"));
+
+        // 1초 이후 다시 허용
+        Thread.sleep(1100);
+
+        mvc.perform(post("/api/friends/request")
+                        .header("X-user-id", "1")
+                        .contentType("application/json")
+                        .content("{\"toUserId\": 2}"))
+                .andExpect(status().isOk());
+
     }
 
     @Test
