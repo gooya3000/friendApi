@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.*;
  * <p>친구 신청 조회, 제약 조건 위반 동작을 검증한다.</p>
  */
 @DataJpaTest
-public class FriendRequestRepositoryTest {
+class FriendRequestRepositoryTest {
 
     @Autowired
     private FriendRequestRepository friendRequestRepository;

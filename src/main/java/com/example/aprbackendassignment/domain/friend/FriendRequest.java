@@ -35,9 +35,11 @@ public class FriendRequest {
     private Long toUserId;
 
     @Column(name = "status", nullable = false)
+    @Builder.Default
     private Status status = Status.PENDING;
 
     @Column(name = "created_at", nullable = false, updatable = false)
+    @Builder.Default
     private Instant createdAt = Instant.now();
 
     public enum Status { PENDING, ACCEPTED, REJECTED }

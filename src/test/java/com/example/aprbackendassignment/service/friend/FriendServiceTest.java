@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
  * <p>친구 목록 조회, 친구 신청 생성, 수락/거절 처리 등 핵심 비즈니스 로직의 정상 동작과
  * 서비스 계층에서 명시적으로 발생시키는 예외를 검증한다.</p>
  */
-public class FriendServiceTest {
+class FriendServiceTest {
 
     private FriendRepository friendRepository;
     private FriendRequestRepository requestRepository;
@@ -150,6 +150,24 @@ public class FriendServiceTest {
         assertThatThrownBy(() -> service.request(fromUserId, toUserId))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("User not found");
+
+        verify(requestRepository, never()).save(any());
+
+    }
+
+    @Test
+    @DisplayName("사용자의 id가 존재하지 않을 경우 예외가 발생한다")
+    void request_cannot_request_to_self() {
+
+        Long fromUserId = 1L;
+        Long toUserId = 1L;
+
+        when(userRepository.existsById(fromUserId)).thenReturn(true);
+        when(userRepository.existsById(toUserId)).thenReturn(true);
+
+        assertThatThrownBy(() -> service.request(fromUserId, toUserId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Cannot request to self");
 
         verify(requestRepository, never()).save(any());
 

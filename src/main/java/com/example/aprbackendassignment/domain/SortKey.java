@@ -2,9 +2,9 @@ package com.example.aprbackendassignment.domain;
 
 public enum SortKey {
 
-    DEFAULT("createAt", "createAt"),
-    APPROVED_AT("approvedAt", "createAt"),
-    REQUESTED_AT("requestedAt", "createAt");
+    DEFAULT("createdAt", "createdAt"),
+    APPROVED_AT("approvedAt", "createdAt"),
+    REQUESTED_AT("requestedAt", "createdAt");
 
     private final String apiKey;
     private final String property;

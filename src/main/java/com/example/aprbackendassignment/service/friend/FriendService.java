@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.example.aprbackendassignment.domain.friend.FriendRequest.Status;
@@ -115,9 +116,19 @@ public class FriendService {
         if (!userRepository.existsById(fromUserId) || !userRepository.existsById(toUserId)) {
             throw new IllegalArgumentException("User not found");
         }
+        if (fromUserId.equals(toUserId)) {
+            throw new IllegalArgumentException("Cannot request to self");
+        }
+
+        // 멱등성을 위한 선조회(통합테스트 실행 시 아래 try-catch 에서 예외가 잡히지 않는 현상으로 추가)
+        Optional<FriendRequest> existing = requestRepository.findByFromUserIdAndToUserIdAndStatus(
+                fromUserId, toUserId, Status.PENDING);
+        if (existing.isPresent()) {
+            return existing.get().getId(); // 이미 있으면 그대로 성공 반환
+        }
 
         try {
-            FriendRequest saved = requestRepository.save(
+            FriendRequest saved = requestRepository.saveAndFlush( // 멱등성을 위해 저장 시점에 바로 flush
                     FriendRequest.builder()
                             .fromUserId(fromUserId)
                             .toUserId(toUserId)

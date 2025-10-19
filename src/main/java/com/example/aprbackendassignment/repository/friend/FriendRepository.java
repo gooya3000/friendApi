@@ -26,4 +26,17 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
            """)
     Page<Friend> findAllByUser(Long userId, Pageable pageable);
 
+    /**
+     * 사용자 ID 와 친구의 ID 로 존재 여부를 조회한다.
+     * @param userId 사용자 ID
+     * @param friendId 친구 ID
+     * @return
+     */
+    @Query("""
+        select case when count(f) > 0 then true else false end
+        FROM Friend f
+        WHERE (f.userA = :userId AND f.userB = :friendId)
+           OR (f.userA = :friendId AND f.userB = :userId)
+    """)
+    boolean existsByUserIdPair(Long userId, Long friendId);
 }
