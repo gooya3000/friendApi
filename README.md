@@ -1,7 +1,6 @@
-# APR Backend Assignment — Friends API
+# Friends API
 
-> 에이피알 백엔드 직무 과제 구현물입니다.  
-Spring Boot 3.5, Java 21, Gradle, H2를 기반으로 하며, Layered Architecture(Controller → Service → Repository) 구조를 따릅니다.
+> Spring Boot 3.5, Java 21, Gradle, H2를 기반으로 하며, Layered Architecture(Controller → Service → Repository) 구조를 따릅니다.
 
 ---
 
